@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <CssBaseline />
-      <Container component={Box} p={4}>
+      <Container component={Box} p={4} maxWidth="sm">
         <Paper component={Box} p={3}>
           <LinearStepper />
         </Paper>
