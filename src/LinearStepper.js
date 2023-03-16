@@ -7,12 +7,22 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
+// import Select from "react-select";
+
 import { useForm, FormProvider, useFormContext, Controller  } from "react-hook-form"
 import { Email } from "@mui/icons-material";
 import Autocomplete from "@mui/material/Autocomplete";
+import { AutocompleteField, AutocompleteFieldMultiple, InputRadioField, InputTextField } from './FormInputs';
 import Box from "@mui/material/Box";
 import Countries from "./Countries";
 
+const ops = [
+  { id: 1, value: 'india',  }
+];
+
+const op1 = [
+  { id: 1, label: 'india',  }
+]
 // countries
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
@@ -440,6 +450,9 @@ const countries = [
 ];
 // countries end
 
+const gender = [
+  "Female","Male","Others"
+]
 function getSteps() {
   return [
     "Basic Information",
@@ -453,7 +466,7 @@ const BasicInformation = ()=>{
   const {control, formState: {errors}} = useFormContext();
   return (
     <>
-    <Controller
+    {/* <Controller
         control={control}
         name="firstName"
         rules={{
@@ -474,9 +487,41 @@ const BasicInformation = ()=>{
             helperText={errors.firstName?.message}
           />
         )}
-      />
+      /> */}
 
-      <Controller
+          <InputTextField 
+                  rules={{
+                    required: "First name is required*",
+                    minLength: 4,
+                    pattern: /^[A-Za-z]+$/i 
+                  }}
+            id="first-name"
+            label="First Name"
+            variant="outlined"
+            placeholder="Enter Your First Name"
+            fullWidth
+            margin="normal"
+            type="text"
+            name="firstName"
+            control= {control} 
+            errors = {errors}
+          />
+
+          <InputTextField 
+              rules={{required: "Last name is required*",}}
+              id="last-name"
+              label="Last Name"
+              margin="normal"
+              variant="outlined"
+              placeholder="Enter Your Last Name"
+              control= {control} 
+              type="text"
+              name="lastName"
+              errors = {errors}
+              fullWidth
+          />
+          
+      {/* <Controller
         control={control}
         name="lastName"
         rules={{required: "Last name is required*",}}
@@ -493,59 +538,30 @@ const BasicInformation = ()=>{
             helperText={errors.lastName?.message}
           />
         )}
-      />
-      {/*  */}
-      {/* <Controller
-      control={control}
-      name="country"
-      rules={{required: "Country Name is required.",}}
-      render={({ field }) => (
-        <Autocomplete
-        id="country-select-demo"
-        sx={{ width: 300 }}
-        options={countries}
-        autoHighlight
-        getOptionLabel={(option) => option.label}
-        renderOption={(props, option) => (
-          <Box
-            component="li"
-            sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-            {...props}
-          >
-            <img
-              loading="lazy"
-              width="20"
-              src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-              alt=""
-            />
-            {option.label} ({option.code}) +{option.phone}
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-          id="country"
-          label="Country"
-          {...field}
-          {...params}
-          error={Boolean(errors.country)}
-          helperText={errors.country?.message}
-          // label="Choose a country"
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: "new-password" // disable autocomplete and autofill
-          }}
-          />
-          )}
-          />  
-      )}
       /> */}
 
-{/* <Controller as={<Countries />} name="country" control={control} /> */}
-
-        
-      {/*  */}
-      <Controller
+      <AutocompleteField
+          multiple={true}
+          options={countries}
+          control={control}
+          name="country"
+          // margin="normal"
+          placeholder="Select Country"
+        />
+      <InputRadioField
+          rules={{required: "Enter your gender*",}}
+          id="gender"
+          label="Gender"
+          margin="normal"
+          variant="outlined"
+          placeholder="Enter Your Gender"
+          control= {control} 
+          type="radio"
+          name="gender"
+          errors = {errors}
+          options={gender}
+          />
+      {/* <Controller
         control={control}
         name="nickName"
         render={({ field }) => (
@@ -560,7 +576,7 @@ const BasicInformation = ()=>{
             
           />
         )}
-      />
+      /> */}
     </>
   );
 };
@@ -571,7 +587,9 @@ const ContactInformation = ()=>{
        <Controller
         control={control}
         name="email"
-        rules={{required: "E-mail Address is required*",}}
+        rules={{required: "E-mail Address is required*",
+        pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+      }}
         render={({ field }) => (
           <TextField
             id="email"
@@ -589,7 +607,20 @@ const ContactInformation = ()=>{
         )}
       />
 
-      <Controller
+          <InputTextField 
+            rules={{required: "Phone Number is required*",}}
+            id="phone-number"
+            label="Phone Number"
+            variant="outlined"
+            placeholder="Enter Your Phone Number"
+            margin="normal"
+            control= {control} 
+            type="number"
+            name="phoneNumber"
+            errors = {errors}
+          />
+
+      {/* <Controller
         control={control}
         name="phoneNumber"
         rules={{required: "Phone Number is required*",}}
@@ -607,7 +638,7 @@ const ContactInformation = ()=>{
             helperText={errors.phoneNumber?.message}
           />
         )}
-      />
+      /> */}
       <Controller
         control={control}
         name="alternatePhone"
@@ -781,17 +812,28 @@ const LinaerStepper = () => {
     defaultValues: {
       firstName: "",
       lastName: "",
-      nickName: "",
-      emailAddress: "",
+      gender:"", 
       phoneNumber: "",
       alternatePhone: "",
       address1: "",
       address2: "",
-      country: "",
+      country: [],
+      targetCountry: '',
       cardNumber: "",
       cardMonth: "",
       cardYear: "",
-    }
+    },
+    // defaultValues:{
+    //   BI:{
+    //   firstName:"",
+    //   lastName:'',
+    //   country:"",
+    //   gender:""
+    // },
+    // CI:{
+
+    // }
+  
   });
   const isStepFailed =()=>{
     // console.log(methods.formState.errors);
@@ -813,8 +855,8 @@ const LinaerStepper = () => {
 
   isStepFailed();
   const handleNext = (data) => {
-    console.log(data);
     if (activeStep == steps.length - 1) {
+      console.log(data);
       fetch("https://jsonplaceholder.typicode.com/comments")
         .then((data) => data.json())
         .then((res) => {
