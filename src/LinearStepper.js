@@ -12,9 +12,12 @@ import {
 import { useForm, FormProvider, useFormContext, Controller  } from "react-hook-form"
 import { Email } from "@mui/icons-material";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AutocompleteField, AutocompleteFieldMultiple, InputRadioField, InputTextField } from './FormInputs';
+import { AutocompleteField, AutocompleteFieldMultiple, DatePickerField, InputRadioField, InputTextField } from './FormInputs';
 import Box from "@mui/material/Box";
 import Countries from "./Countries";
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+
 
 const ops = [
   { id: 1, value: 'india',  }
@@ -457,7 +460,7 @@ function getSteps() {
   return [
     "Basic Information",
     "Contact Information",
-    "Personal Information",
+    // "Personal Information",
     "Payment",
   ];
 }
@@ -466,28 +469,6 @@ const BasicInformation = ()=>{
   const {control, formState: {errors}} = useFormContext();
   return (
     <>
-    {/* <Controller
-        control={control}
-        name="firstName"
-        rules={{
-          required: "First name is required*",
-          minLength: 4,
-          pattern: /^[A-Za-z]+$/i 
-        }}
-        render={({ field }) => (
-          <TextField
-            id="first-name"
-            label="First Name"
-            variant="outlined"
-            placeholder="Enter Your First Name"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.firstName)}
-            helperText={errors.firstName?.message}
-          />
-        )}
-      /> */}
 
           <InputTextField 
                   rules={{
@@ -521,33 +502,14 @@ const BasicInformation = ()=>{
               fullWidth
           />
           
-      {/* <Controller
-        control={control}
-        name="lastName"
-        rules={{required: "Last name is required*",}}
-        render={({ field }) => (
-          <TextField
-            id="last-name"
-            label="Last Name"
-            variant="outlined"
-            placeholder="Enter Your Last Name"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.lastName)}
-            helperText={errors.lastName?.message}
-          />
-        )}
-      /> */}
-
-      <AutocompleteField
-          multiple={true}
-          options={countries}
+          
+            <DatePickerField  
+          name="dob"
           control={control}
-          name="country"
-          // margin="normal"
-          placeholder="Select Country"
-        />
+          label="DOB"
+          
+          />
+
       <InputRadioField
           rules={{required: "Enter your gender*",}}
           id="gender"
@@ -561,53 +523,32 @@ const BasicInformation = ()=>{
           errors = {errors}
           options={gender}
           />
-      {/* <Controller
-        control={control}
-        name="nickName"
-        render={({ field }) => (
-          <TextField
-            id="nick-name"
-            label="Nick Name"
-            variant="outlined"
-            placeholder="Enter Your Nick Name"
-            fullWidth
-            margin="normal"
-            {...field}
-            
-          />
-        )}
-      /> */}
     </>
   );
 };
 const ContactInformation = ()=>{
+  
   const {control, formState: {errors}} = useFormContext();
   return (
     <>
-       <Controller
-        control={control}
-        name="email"
-        rules={{required: "E-mail Address is required*",
-        pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-      }}
-        render={({ field }) => (
-          <TextField
+      <InputTextField 
+            rules={{required: "E-mail Address is required*",
+                  pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+                }}
             id="email"
             label="Email"
-            type="email"
             variant="outlined"
             placeholder="Enter Your E-mail Address"
-            // fullWidth
+            fullWidth
             margin="normal"
-            sx={{ mr: 4 }}
-            {...field}
-            error={Boolean(errors.email)}
-            helperText={errors.email?.message}
+            type="email"
+            name="email" 
+            // style = {{width: "50%"}}
+            control= {control} 
+            errors = {errors}
           />
-        )}
-      />
 
-          <InputTextField 
+      <InputTextField 
             rules={{required: "Phone Number is required*",}}
             id="phone-number"
             label="Phone Number"
@@ -617,111 +558,91 @@ const ContactInformation = ()=>{
             control= {control} 
             type="number"
             name="phoneNumber"
+            style = {{width: "50%", }}
             errors = {errors}
           />
 
-      {/* <Controller
-        control={control}
-        name="phoneNumber"
-        rules={{required: "Phone Number is required*",}}
-        render={({ field }) => (
-          <TextField
-            id="phone-number"
-            label="Phone Number"
-            type="number"
-            variant="outlined"
-            placeholder="Enter Your Phone Number"
-            // fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.phoneNumber)}
-            helperText={errors.phoneNumber?.message}
-          />
-        )}
-      /> */}
-      <Controller
-        control={control}
-        name="alternatePhone"
-        rules={{required: "Alternate Phone is required*",}}
-        render={({ field }) => (
-          <TextField
+      <InputTextField 
+            rules={{required: "Alternate Phone Number is required*",}}
             id="alternate-phone"
             label="Alternate Phone"
+            variant="outlined"
+            placeholder="Enter Your Alternate Phone Number"
+            margin="normal"
+            control= {control} 
             type="number"
-            variant="outlined"
-            placeholder="Enter Your Alternate Phone"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.alternatePhone)}
-            helperText={errors.alternatePhone?.message}
+            name="alternatePhone"
+            style = {{width: "45%", marginLeft:"1.5rem"}}
+            errors = {errors}
           />
-        )}
-      />
+          <InputTextField 
+              rules={{required: "Address 1 is required.*",}}
+              id="address1"
+              label="Address 1"
+              margin="normal"
+              variant="outlined"
+              placeholder="Enter Your Address 1"
+              control= {control} 
+              type="text"
+              name="address1"
+              style = {{width: "50%",}}
+              errors = {errors}
+              // fullWidth
+          />
+          <InputTextField 
+              rules={{required: "Address 2 is required.*",}}
+              id="address2"
+              label="Address 2"
+              margin="normal"
+              variant="outlined"
+              placeholder="Enter Your Address 2"
+              control= {control} 
+              type="text"
+              name="address2"
+              style = {{width: "45%", marginLeft:"1.5rem"}}
+              errors = {errors}
+              // fullWidth
+          />
+            
+            <AutocompleteField
+              multiple={true}
+              options={countries}
+              control={control}
+              name="country"
+              margin="normal"
+              
+              placeholder="Select Country"
+            />
+          
+    
     </>
   );
 };
-const PersonalInformation = ()=>{
-  const {control, formState: {errors}} = useFormContext();
-  return (
-    <>
-       <Controller
-        control={control}
-        name="address1"
-        rules={{required: "Address 1 is required.",}}
-        render={({ field }) => (
-          <TextField
-            id="address1"
-            label="Address 1"
-            variant="outlined"
-            placeholder="Enter Your Address 1"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.address1)}
-            helperText={errors.address1?.message}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name="address2"
-        rules={{required: "Address 2 is required.",}}
-        render={({ field }) => (
-          <TextField
-            id="address2"
-            label="Address 2"
-            variant="outlined"
-            placeholder="Enter Your Address 2"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.address2)}
-            helperText={errors.address2?.message}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name="country"
-        rules={{required: "Country Name is required.",}}
-        render={({ field }) => (
-          <TextField
-            id="country"
-            label="Country"
-            variant="outlined"
-            placeholder="Enter Your Country Name"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.country)}
-            helperText={errors.country?.message}
-          />
-        )}
-      />
-    </>
-  );
-};
+// const PersonalInformation = ()=>{
+//   const {control, formState: {errors}} = useFormContext();
+//   return (
+//     <>
+//       <Controller
+//         control={control}
+//         name="country"
+//         rules={{required: "Country Name is required.",}}
+//         render={({ field }) => (
+//           <TextField
+//             id="country"
+//             label="Country"
+//             variant="outlined"
+//             placeholder="Enter Your Country Name"
+//             fullWidth
+//             margin="normal"
+//             {...field}
+//             error={Boolean(errors.country)}
+//             helperText={errors.country?.message}
+//           />
+//         )}
+//       />
+//     </>
+//   );
+// };
 const PaymentInformation = ()=>{  
   const {control, formState: {errors}} = useFormContext();
   return (
@@ -792,10 +713,10 @@ function getStepContent(step) {
     case 1:
      return <ContactInformation/>;
 
-    case 2:
-     return <PersonalInformation/>;
+    // case 2:
+    //  return <PersonalInformation/>;
 
-    case 3:
+    case 2:
      return <PaymentInformation/>;
 
     default:
@@ -804,7 +725,6 @@ function getStepContent(step) {
 }
 
 const LinaerStepper = () => {
-  // const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
   const steps = getSteps();
@@ -822,26 +742,16 @@ const LinaerStepper = () => {
       cardNumber: "",
       cardMonth: "",
       cardYear: "",
+      dob:""
     },
-    // defaultValues:{
-    //   BI:{
-    //   firstName:"",
-    //   lastName:'',
-    //   country:"",
-    //   gender:""
-    // },
-    // CI:{
-
-    // }
-  
   });
   const isStepFailed =()=>{
     // console.log(methods.formState.errors);
     return Boolean(Object.keys(methods.formState.errors).length)
   }
-  const isStepOptional = (step) => {
-    return step === 1 || step === 2;
-  };
+  // const isStepOptional = (step) => {
+  //   return step === 1 || step === 2;
+  // };
 
   const isStepSkipped = (step) => {
     return skippedSteps.includes(step);
@@ -890,17 +800,17 @@ const LinaerStepper = () => {
         {steps.map((step, index) => {
           const labelProps = {};
           const stepProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography
-                variant="caption"
-                align="center"
-                style={{ display: "block" }}
-              >
-                optional
-              </Typography>
-            );
-          }
+          // if (isStepOptional(index)) {
+          //   labelProps.optional = (
+          //     <Typography
+          //       variant="caption"
+          //       align="center"
+          //       style={{ display: "block" }}
+          //     >
+          //       optional
+          //     </Typography>
+          //   );
+          // }
           if (isStepFailed() && activeStep == index) {
             labelProps.error=true;
           }
