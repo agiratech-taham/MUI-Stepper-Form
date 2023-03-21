@@ -1,6 +1,6 @@
 import LinearStepper from "./LinearStepper";
 import { CssBaseline, Container, Paper, Box } from "@mui/material";
-
+import "./App.css"
 function App() {
   return (
     <>

@@ -6,11 +6,12 @@ import { FormControl, FormControlLabel, RadioGroup ,FormHelperText} from "@mui/m
 import Radio from '@mui/material/Radio';
 import FormLabel from '@mui/material/FormLabel';
 import { Box } from "@mui/system";
-
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import './FormInput.css';
 
 export const AutocompleteField = (props) => {
   const { control, options, name, multiple } = props;
@@ -87,7 +88,7 @@ export const DatePickerField = ({ name, control, label }) => {
     render={
         ({ field }) =>
         <LocalizationProvider 
-        style={{width:'100%'}}
+       
         dateAdapter={AdapterDayjs}>
             <DatePicker
                 label={label}

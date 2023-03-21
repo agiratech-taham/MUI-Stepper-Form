@@ -7,25 +7,17 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-// import Select from "react-select";
+import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form"
+import { AutocompleteField, DatePickerField, InputPhoneField, InputRadioField, InputTextField } from './FormInputs';
+import Grid from '@mui/material/Grid';
+import { isValidPhoneNumber } from "react-phone-number-input";
+import MuiPhoneNumber from 'mui-phone-number';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "./Validation";
 
-import { useForm, FormProvider, useFormContext, Controller  } from "react-hook-form"
-import { Email } from "@mui/icons-material";
-import Autocomplete from "@mui/material/Autocomplete";
-import { AutocompleteField, AutocompleteFieldMultiple, DatePickerField, InputRadioField, InputTextField } from './FormInputs';
-import Box from "@mui/material/Box";
-import Countries from "./Countries";
 
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-
-
-const ops = [
-  { id: 1, value: 'india',  }
-];
-
-const op1 = [
-  { id: 1, label: 'india',  }
-]
 // countries
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
@@ -454,7 +446,7 @@ const countries = [
 // countries end
 
 const gender = [
-  "Female","Male","Others"
+  "Female", "Male", "Others"
 ]
 function getSteps() {
   return [
@@ -465,157 +457,181 @@ function getSteps() {
   ];
 }
 
-const BasicInformation = ()=>{
-  const {control, formState: {errors}} = useFormContext();
+const BasicInformation = () => {
+  const { control, formState: { errors } } = useFormContext();
   return (
-    <>
+    <Grid container spacing={2} columns={12}>
+      <Grid item xs={12}>
+        <InputTextField
+          rules={{
+            required: "First name is required*",
+            minLength: 4,
+            pattern: /^[A-Za-z]+$/i
+          }}
+          id="first-name"
+          label="First Name"
+          variant="outlined"
+          placeholder="Enter Your First Name"
+          fullWidth
+          margin="normal"
+          type="text"
+          name="firstName"
+          control={control}
+          errors={errors}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <InputTextField
+          rules={{ required: "Last name is required*", }}
+          id="last-name"
+          label="Last Name"
+          margin="normal"
+          variant="outlined"
+          placeholder="Enter Your Last Name"
+          control={control}
+          type="text"
+          name="lastName"
+          errors={errors}
+          fullWidth
+        />
+      </Grid>
+      <Grid item xs={12}>
 
-          <InputTextField 
-                  rules={{
-                    required: "First name is required*",
-                    minLength: 4,
-                    pattern: /^[A-Za-z]+$/i 
-                  }}
-            id="first-name"
-            label="First Name"
-            variant="outlined"
-            placeholder="Enter Your First Name"
-            fullWidth
-            margin="normal"
-            type="text"
-            name="firstName"
-            control= {control} 
-            errors = {errors}
-          />
-
-          <InputTextField 
-              rules={{required: "Last name is required*",}}
-              id="last-name"
-              label="Last Name"
-              margin="normal"
-              variant="outlined"
-              placeholder="Enter Your Last Name"
-              control= {control} 
-              type="text"
-              name="lastName"
-              errors = {errors}
-              fullWidth
-          />
-          
-          
-            <DatePickerField  
+        <DatePickerField
           name="dob"
           control={control}
           label="DOB"
-          
-          />
 
-      <InputRadioField
-          rules={{required: "Enter your gender*",}}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <InputRadioField
+          rules={{ required: "Enter your gender*", }}
           id="gender"
           label="Gender"
           margin="normal"
           variant="outlined"
           placeholder="Enter Your Gender"
-          control= {control} 
+          control={control}
           type="radio"
           name="gender"
-          errors = {errors}
+          errors={errors}
           options={gender}
-          />
-    </>
+        />
+      </Grid>
+    </Grid>
   );
 };
-const ContactInformation = ()=>{
-  
-  const {control, formState: {errors}} = useFormContext();
+const ContactInformation = () => {
+
+  const[phone,setPhone] = useState({})
+
+  const { control, formState: { errors } } = useFormContext();
   return (
-    <>
-      <InputTextField 
-            rules={{required: "E-mail Address is required*",
-                  pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-                }}
-            id="email"
-            label="Email"
-            variant="outlined"
-            placeholder="Enter Your E-mail Address"
-            fullWidth
-            margin="normal"
-            type="email"
-            name="email" 
-            // style = {{width: "50%"}}
-            control= {control} 
-            errors = {errors}
-          />
+    <Grid container spacing={2} columns={12}>
+      <Grid item xs={12}>
+        <InputTextField
+          rules={{
+            required: "E-mail Address is required*",
+            pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+          }}
+          id="email"
+          label="Email"
+          variant="outlined"
+          placeholder="Enter Your E-mail Address"
+          fullWidth
+          margin="normal"
+          type="email"
+          name="email"
+          // style = {{width: "50%"}}
+          control={control}
+          errors={errors}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={6}>
 
-      <InputTextField 
-            rules={{required: "Phone Number is required*",}}
-            id="phone-number"
-            label="Phone Number"
-            variant="outlined"
-            placeholder="Enter Your Phone Number"
-            margin="normal"
-            control= {control} 
-            type="number"
-            name="phoneNumber"
-            style = {{width: "50%", }}
-            errors = {errors}
-          />
 
-      <InputTextField 
-            rules={{required: "Alternate Phone Number is required*",}}
-            id="alternate-phone"
-            label="Alternate Phone"
-            variant="outlined"
-            placeholder="Enter Your Alternate Phone Number"
-            margin="normal"
-            control= {control} 
-            type="number"
-            name="alternatePhone"
-            style = {{width: "45%", marginLeft:"1.5rem"}}
-            errors = {errors}
-          />
-          <InputTextField 
-              rules={{required: "Address 1 is required.*",}}
-              id="address1"
-              label="Address 1"
-              margin="normal"
+
+        {/* <PhoneInput
+          country={'us'}
+          value={phone}
+          onChange={event => setPhone({phone:event.target.value  })}
+        /> */}
+        <InputTextField 
+              rules={{required: "Phone Number is required*",}}
+              id="phone-number"
+              label="Phone Number"
               variant="outlined"
-              placeholder="Enter Your Address 1"
-              control= {control} 
-              type="text"
-              name="address1"
-              style = {{width: "50%",}}
-              errors = {errors}
-              // fullWidth
-          />
-          <InputTextField 
-              rules={{required: "Address 2 is required.*",}}
-              id="address2"
-              label="Address 2"
+              placeholder="Enter Your Phone Number"
               margin="normal"
-              variant="outlined"
-              placeholder="Enter Your Address 2"
               control= {control} 
-              type="text"
-              name="address2"
-              style = {{width: "45%", marginLeft:"1.5rem"}}
+              type="number"
+              name="phoneNumber"
+              // style = {{width: "50%", }}
               errors = {errors}
-              // fullWidth
-          />
-            
-            <AutocompleteField
-              multiple={true}
-              options={countries}
-              control={control}
-              name="country"
-              margin="normal"
-              
-              placeholder="Select Country"
             />
-          
-    
-    </>
+      </Grid>
+      <Grid item xs={12} sm={6} md={6}>
+        <InputTextField
+          rules={{ required: "Alternate Phone Number is required*", }}
+          id="alternate-phone"
+          label="Alternate Phone"
+          variant="outlined"
+          placeholder="Enter Your Alternate Phone Number"
+          margin="normal"
+          control={control}
+          type="number"
+          name="alternatePhone"
+          // style = {{width: "45%", marginLeft:"1.5rem"}}
+          errors={errors}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={6}>
+        <InputTextField
+          rules={{ required: "Address 1 is required.*", }}
+          id="address1"
+          label="Address 1"
+          margin="normal"
+          variant="outlined"
+          placeholder="Enter Your Address 1"
+          control={control}
+          type="text"
+          name="address1"
+          // style = {{width: "50%",}}
+          errors={errors}
+        // fullWidth
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={6}>
+        <InputTextField
+          rules={{ required: "Address 2 is required.*", }}
+          id="address2"
+          label="Address 2"
+          margin="normal"
+          variant="outlined"
+          placeholder="Enter Your Address 2"
+          control={control}
+          type="text"
+          name="address2"
+          // style = {{width: "45%", marginLeft:"1.5rem"}}
+          errors={errors}
+        // fullWidth
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <AutocompleteField
+          multiple={true}
+          options={countries}
+          control={control}
+          name="country"
+          margin="normal"
+
+          placeholder="Select Country"
+        />
+      </Grid>
+    </Grid>
+
+
   );
 };
 // const PersonalInformation = ()=>{
@@ -643,14 +659,31 @@ const ContactInformation = ()=>{
 //     </>
 //   );
 // };
-const PaymentInformation = ()=>{  
-  const {control, formState: {errors}} = useFormContext();
+
+const PaymentInformation = () => {
+  const { control, formState: { errors } } = useFormContext();
   return (
     <>
+      <Grid item xs={12} sm={6} md={6}>
+        <InputTextField
+          rules={{ required: "Card Number is required.", }}
+          id="cardNumber"
+          label="Card Number"
+          margin="normal"
+          variant="outlined"
+          placeholder="Enter Your Card Number"
+          control={control}
+          type="text"
+          name="cardNumber"
+          // style = {{width: "45%", marginLeft:"1.5rem"}}
+          errors={errors}
+        // fullWidth
+        />
+      </Grid>
       <Controller
         control={control}
         name="cardNumber"
-        rules={{required: "Card Number is required.",}}
+        rules={{ required: "Card Number is required.", }}
         render={({ field }) => (
           <TextField
             id="cardNumber"
@@ -668,7 +701,7 @@ const PaymentInformation = ()=>{
       <Controller
         control={control}
         name="cardMonth"
-        rules={{required: "Card Month is required.",}}
+        rules={{ required: "Card Month is required.", }}
         render={({ field }) => (
           <TextField
             id="cardMonth"
@@ -686,7 +719,7 @@ const PaymentInformation = ()=>{
       <Controller
         control={control}
         name="cardYear"
-        rules={{required: "Card Year is required.",}}
+        rules={{ required: "Card Year is required.", }}
         render={({ field }) => (
           <TextField
             id="cardYear"
@@ -708,16 +741,16 @@ const PaymentInformation = ()=>{
 function getStepContent(step) {
   switch (step) {
     case 0:
-     return <BasicInformation/>;
+      return <BasicInformation />;
 
     case 1:
-     return <ContactInformation/>;
+      return <ContactInformation />;
 
     // case 2:
     //  return <PersonalInformation/>;
 
     case 2:
-     return <PaymentInformation/>;
+      return <PaymentInformation />;
 
     default:
       return "unknown step";
@@ -728,24 +761,29 @@ const LinaerStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
   const steps = getSteps();
+  
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    resolver: yupResolver(loginSchema),
+  });
+  
   const methods = useForm({
     defaultValues: {
       firstName: "",
       lastName: "",
-      gender:"", 
+      dob: "",
+      gender: "",
+      email:"",
       phoneNumber: "",
       alternatePhone: "",
       address1: "",
       address2: "",
       country: [],
-      targetCountry: '',
       cardNumber: "",
       cardMonth: "",
       cardYear: "",
-      dob:""
     },
   });
-  const isStepFailed =()=>{
+  const isStepFailed = () => {
     // console.log(methods.formState.errors);
     return Boolean(Object.keys(methods.formState.errors).length)
   }
@@ -812,7 +850,7 @@ const LinaerStepper = () => {
           //   );
           // }
           if (isStepFailed() && activeStep == index) {
-            labelProps.error=true;
+            labelProps.error = true;
           }
           if (isStepSkipped(index)) {
             stepProps.completed = false;
@@ -831,20 +869,20 @@ const LinaerStepper = () => {
         </Typography>
       ) : (
         <>
-        <FormProvider {...methods}>
-         <form  onSubmit={methods.handleSubmit(handleNext)}>
-          {getStepContent(activeStep)}
-          <div style={{display:'flex',justifyContent:'space-between'}}>
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(handleNext)}>
+              {getStepContent(activeStep)}
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-         { activeStep !== 0 ? <Button
-            // className={classes.button}
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            sx={{ mr: 1 }}
-          >
-            back
-          </Button>:<div></div>}
-          {/* {isStepOptional(activeStep) && (
+                {activeStep !== 0 ? <Button
+                  // className={classes.button}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  back
+                </Button> : <div></div>}
+                {/* {isStepOptional(activeStep) && (
             <Button
               // className={classes.button}
               variant="contained"
@@ -855,21 +893,21 @@ const LinaerStepper = () => {
               skip
               </Button>
             )} */}
-          <Button
-            // className={classes.button}
-            variant="contained"
-            color="primary"
-            // onClick={handleNext}
-            type="submit"
-            // sx={{ alignItems:"end" }}
-            // style={{verticalAlign:'end'}}
-            >
-            {activeStep === steps.length - 1 ? "Finish" : "Next"}
-          </Button>
-            </div>
-         </form>
-        </FormProvider>
-          
+                <Button
+                  // className={classes.button}
+                  variant="contained"
+                  color="primary"
+                  // onClick={handleNext}
+                  type="submit"
+                // sx={{ alignItems:"end" }}
+                // style={{verticalAlign:'end'}}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                </Button>
+              </div>
+            </form>
+          </FormProvider>
+
         </>
       )}
     </div>
