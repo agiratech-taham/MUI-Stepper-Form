@@ -1,21 +1,17 @@
 import React, { useState } from "react";
 import {
   Typography,
-  TextField,
   Button,
   Stepper,
   Step,
   StepLabel,
 } from "@mui/material";
-import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form"
-import { AutocompleteField, DatePickerField, InputPhoneField, InputRadioField, InputTextField } from './FormInputs';
+import { useForm, FormProvider, useFormContext } from "react-hook-form"
+import { AutocompleteField, DatePickerField, InputRadioField, InputTextField } from './FormInputs';
 import Grid from '@mui/material/Grid';
-import { isValidPhoneNumber } from "react-phone-number-input";
-import MuiPhoneNumber from 'mui-phone-number';
-import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "./Validation";
+import { formValidationSchema } from "./Validation";
 
 
 // countries
@@ -452,46 +448,36 @@ function getSteps() {
   return [
     "Basic Information",
     "Contact Information",
-    // "Personal Information",
     "Payment",
   ];
 }
 
 const BasicInformation = () => {
+  
   const { control, formState: { errors } } = useFormContext();
   return (
     <Grid container spacing={2} columns={12}>
       <Grid item xs={12}>
         <InputTextField
-          rules={{
-            required: "First name is required*",
-            minLength: 4,
-            pattern: /^[A-Za-z]+$/i
-          }}
-          id="first-name"
           label="First Name"
           variant="outlined"
           placeholder="Enter Your First Name"
-          fullWidth
-          margin="normal"
-          type="text"
           name="firstName"
+          margin='normal'
           control={control}
-          errors={errors}
+          errors={errors.firstName
+          }
         />
       </Grid>
       <Grid item xs={12}>
         <InputTextField
-          rules={{ required: "Last name is required*", }}
-          id="last-name"
           label="Last Name"
           margin="normal"
           variant="outlined"
           placeholder="Enter Your Last Name"
           control={control}
-          type="text"
           name="lastName"
-          errors={errors}
+          errors={errors.lastName}
           fullWidth
         />
       </Grid>
@@ -501,13 +487,11 @@ const BasicInformation = () => {
           name="dob"
           control={control}
           label="DOB"
-
+          errors={errors.dob}
         />
       </Grid>
       <Grid item xs={12}>
         <InputRadioField
-          rules={{ required: "Enter your gender*", }}
-          id="gender"
           label="Gender"
           margin="normal"
           variant="outlined"
@@ -515,7 +499,7 @@ const BasicInformation = () => {
           control={control}
           type="radio"
           name="gender"
-          errors={errors}
+          errors={errors.gender}
           options={gender}
         />
       </Grid>
@@ -524,42 +508,23 @@ const BasicInformation = () => {
 };
 const ContactInformation = () => {
 
-  const[phone,setPhone] = useState({})
-
   const { control, formState: { errors } } = useFormContext();
   return (
     <Grid container spacing={2} columns={12}>
       <Grid item xs={12}>
         <InputTextField
-          rules={{
-            required: "E-mail Address is required*",
-            pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-          }}
-          id="email"
           label="Email"
           variant="outlined"
           placeholder="Enter Your E-mail Address"
           fullWidth
           margin="normal"
-          type="email"
           name="email"
-          // style = {{width: "50%"}}
           control={control}
-          errors={errors}
+          errors={errors.email}
         />
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
-
-
-
-        {/* <PhoneInput
-          country={'us'}
-          value={phone}
-          onChange={event => setPhone({phone:event.target.value  })}
-        /> */}
         <InputTextField 
-              rules={{required: "Phone Number is required*",}}
-              id="phone-number"
               label="Phone Number"
               variant="outlined"
               placeholder="Enter Your Phone Number"
@@ -567,14 +532,11 @@ const ContactInformation = () => {
               control= {control} 
               type="number"
               name="phoneNumber"
-              // style = {{width: "50%", }}
-              errors = {errors}
+              errors = {errors.phoneNumber}
             />
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
         <InputTextField
-          rules={{ required: "Alternate Phone Number is required*", }}
-          id="alternate-phone"
           label="Alternate Phone"
           variant="outlined"
           placeholder="Enter Your Alternate Phone Number"
@@ -582,30 +544,22 @@ const ContactInformation = () => {
           control={control}
           type="number"
           name="alternatePhone"
-          // style = {{width: "45%", marginLeft:"1.5rem"}}
-          errors={errors}
+          errors={errors.alternatePhone}
         />
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
         <InputTextField
-          rules={{ required: "Address 1 is required.*", }}
-          id="address1"
           label="Address 1"
           margin="normal"
           variant="outlined"
           placeholder="Enter Your Address 1"
           control={control}
-          type="text"
           name="address1"
-          // style = {{width: "50%",}}
-          errors={errors}
-        // fullWidth
+          errors={errors.address1}
         />
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
         <InputTextField
-          rules={{ required: "Address 2 is required.*", }}
-          id="address2"
           label="Address 2"
           margin="normal"
           variant="outlined"
@@ -613,9 +567,7 @@ const ContactInformation = () => {
           control={control}
           type="text"
           name="address2"
-          // style = {{width: "45%", marginLeft:"1.5rem"}}
-          errors={errors}
-        // fullWidth
+          errors={errors.address2}
         />
       </Grid>
       <Grid item xs={12}>
@@ -625,7 +577,7 @@ const ContactInformation = () => {
           control={control}
           name="country"
           margin="normal"
-
+          errors={errors.country}
           placeholder="Select Country"
         />
       </Grid>
@@ -634,107 +586,43 @@ const ContactInformation = () => {
 
   );
 };
-// const PersonalInformation = ()=>{
-//   const {control, formState: {errors}} = useFormContext();
-//   return (
-//     <>
-//       <Controller
-//         control={control}
-//         name="country"
-//         rules={{required: "Country Name is required.",}}
-//         render={({ field }) => (
-//           <TextField
-//             id="country"
-//             label="Country"
-//             variant="outlined"
-//             placeholder="Enter Your Country Name"
-//             fullWidth
-//             margin="normal"
-//             {...field}
-//             error={Boolean(errors.country)}
-//             helperText={errors.country?.message}
-//           />
-//         )}
-//       />
-//     </>
-//   );
-// };
-
 const PaymentInformation = () => {
+  
   const { control, formState: { errors } } = useFormContext();
   return (
-    <>
       <Grid item xs={12} sm={6} md={6}>
+      <Grid item xs={12}>
         <InputTextField
-          rules={{ required: "Card Number is required.", }}
-          id="cardNumber"
           label="Card Number"
           margin="normal"
           variant="outlined"
           placeholder="Enter Your Card Number"
           control={control}
-          type="text"
           name="cardNumber"
-          // style = {{width: "45%", marginLeft:"1.5rem"}}
-          errors={errors}
-        // fullWidth
+          errors={errors.cardNumber}
         />
-      </Grid>
-      <Controller
-        control={control}
-        name="cardNumber"
-        rules={{ required: "Card Number is required.", }}
-        render={({ field }) => (
-          <TextField
-            id="cardNumber"
-            label="Card Number"
-            variant="outlined"
-            placeholder="Enter Your Card Number"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.cardNumber)}
-            helperText={errors.cardNumber?.message}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name="cardMonth"
-        rules={{ required: "Card Month is required.", }}
-        render={({ field }) => (
-          <TextField
-            id="cardMonth"
-            label="Card Month"
-            variant="outlined"
-            placeholder="Enter Your Card Month"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.cardMonth)}
-            helperText={errors.cardMonth?.message}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name="cardYear"
-        rules={{ required: "Card Year is required.", }}
-        render={({ field }) => (
-          <TextField
-            id="cardYear"
-            label="Card Year"
-            variant="outlined"
-            placeholder="Enter Your Card Year"
-            fullWidth
-            margin="normal"
-            {...field}
-            error={Boolean(errors.cardYear)}
-            helperText={errors.cardYear?.message}
-          />
-        )}
-      />
-    </>
+        </Grid>
+        <Grid item xs={12}>
+        <InputTextField
+          label="Card Month"
+          margin="normal"
+          variant="outlined"
+          placeholder="Enter Your Card Month"
+          control={control}
+          name="cardMonth"
+          errors={errors.cardMonth}
+        />
+        </Grid>
+        <Grid item xs={12}>
+        <DatePickerField
+          name="cardYear"
+          control={control}
+          label="Card Year"
+          errors={errors.cardYear}
+        />
+        </Grid>
+</Grid>
+
   );
 };
 
@@ -745,9 +633,6 @@ function getStepContent(step) {
 
     case 1:
       return <ContactInformation />;
-
-    // case 2:
-    //  return <PersonalInformation/>;
 
     case 2:
       return <PaymentInformation />;
@@ -761,45 +646,36 @@ const LinaerStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
   const steps = getSteps();
-  
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
-    resolver: yupResolver(loginSchema),
-  });
-  
-  const methods = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      dob: "",
-      gender: "",
-      email:"",
-      phoneNumber: "",
-      alternatePhone: "",
-      address1: "",
-      address2: "",
-      country: [],
-      cardNumber: "",
-      cardMonth: "",
-      cardYear: "",
-    },
-  });
+  const defaultValues= {
+        firstName: "",
+        lastName: "",
+        dob: "",
+        gender: "",
+        email:"",
+        phoneNumber: "",
+        alternatePhone: "",
+        address1: "",
+        address2: "",
+        country: "",
+        cardNumber: "",
+        cardMonth: "",
+        cardYear: "",
+      }
+      const currentValidationSchema = formValidationSchema[activeStep];
+      const methods = useForm({
+        shouldUnregister:false,
+        defaultValues,
+        resolver: yupResolver(currentValidationSchema),
+        mode: "onChange"
+      });
+
   const isStepFailed = () => {
-    // console.log(methods.formState.errors);
     return Boolean(Object.keys(methods.formState.errors).length)
   }
-  // const isStepOptional = (step) => {
-  //   return step === 1 || step === 2;
-  // };
-
+ 
   const isStepSkipped = (step) => {
     return skippedSteps.includes(step);
   };
-
-  // const handleNext = (data) => {
-  //   console.log(data)
-  //   setActiveStep(activeStep + 1);
-  //   setSkippedSteps(skippedSteps.filter((skipItem) => skipItem !== activeStep));
-  // };
 
   isStepFailed();
   const handleNext = (data) => {
@@ -829,32 +705,19 @@ const LinaerStepper = () => {
     }
     setActiveStep(activeStep + 1);
   };
-  // const onSubmit = (data)=>{
-  //   console.log(data)
-  // }
+
   return (
     <div>
       <Stepper alternativeLabel activeStep={activeStep}>
         {steps.map((step, index) => {
           const labelProps = {};
           const stepProps = {};
-          // if (isStepOptional(index)) {
-          //   labelProps.optional = (
-          //     <Typography
-          //       variant="caption"
-          //       align="center"
-          //       style={{ display: "block" }}
-          //     >
-          //       optional
-          //     </Typography>
-          //   );
-          // }
           if (isStepFailed() && activeStep == index) {
             labelProps.error = true;
           }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
+          // if (isStepSkipped(index)) {
+          //   stepProps.completed = false;
+          // }
           return (
             <Step {...stepProps} key={index}>
               <StepLabel {...labelProps}>{step}</StepLabel>
@@ -875,32 +738,16 @@ const LinaerStepper = () => {
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                 {activeStep !== 0 ? <Button
-                  // className={classes.button}
                   disabled={activeStep === 0}
                   onClick={handleBack}
                   sx={{ mr: 1 }}
                 >
                   back
                 </Button> : <div></div>}
-                {/* {isStepOptional(activeStep) && (
-            <Button
-              // className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={handleSkip}
-              sx={{ mr: 1 }}
-              >
-              skip
-              </Button>
-            )} */}
                 <Button
-                  // className={classes.button}
                   variant="contained"
                   color="primary"
-                  // onClick={handleNext}
                   type="submit"
-                // sx={{ alignItems:"end" }}
-                // style={{verticalAlign:'end'}}
                 >
                   {activeStep === steps.length - 1 ? "Finish" : "Next"}
                 </Button>

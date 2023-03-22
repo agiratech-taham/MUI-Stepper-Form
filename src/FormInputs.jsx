@@ -70,8 +70,8 @@ export const InputTextField = (props) => {
         <TextField
           {...props}
           {...field}
-          error={Boolean(errors[name])}
-          helperText={errors[name]?.message}
+          error={errors}
+          helperText={errors?.message}
         />
       )}
       />
@@ -79,7 +79,7 @@ export const InputTextField = (props) => {
 };
 
 // const DATE_FORMAT = format('DD/MM/YYYY');
-export const DatePickerField = ({ name, control, label }) => {
+export const DatePickerField = ({ name, control, errors, label }) => {
   return (
     
     <Controller
@@ -94,7 +94,9 @@ export const DatePickerField = ({ name, control, label }) => {
                 label={label}
                 defaultValue={dayjs('2019-01-25').format('DD/MM/YYYY')}
                 {...field}
+                error={errors}
             />
+          <FormHelperText style={{color:'#d32f2f',marginLeft:'1rem'}}>{errors?.message}</FormHelperText>
         </LocalizationProvider>
        }
    /> 
@@ -121,7 +123,7 @@ export const InputRadioField = (props) => {
       row
       {...props}
       {...field}
-      // error={Boolean(errors[name])}
+      // error={errors}
       // helperText={errors[name]?.message}
       >
         {options.map((item)=> {
@@ -150,7 +152,7 @@ export const InputRadioField = (props) => {
         label="Others"
       /> */}
       </RadioGroup>
-      <FormHelperText style={{color:'#d32f2f',marginLeft:'1rem'}}>{errors[name]?.message}</FormHelperText>
+      <FormHelperText style={{color:'#d32f2f',marginLeft:'1rem'}}>{errors?.message}</FormHelperText>
       </Box>
         
     )}
