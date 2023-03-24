@@ -13,6 +13,52 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import './FormInput.css';
 
+// export const AutocompleteField = (props) => {
+//   const { control, options, name, multiple } = props;
+//   return (
+//     <Controller
+//       name={name}
+//       control={control}
+//       rules={{
+//         required: "This field is requried*"
+//       }}
+//       render={({ field:{ onChange, ref ,...field}, fieldState: { error } }) => {
+//         return (
+//           <>
+//             <Autocomplete
+//             // multiple = { multiple}
+//               getOptionLabel={(option) => {
+//                 return option.label
+//               }}
+//               // renderOption= {(props, option, { selected }) => (
+//               //   <li {...props} style={{ color: 'red' }}> {option.label} </li> 
+//               // )}
+//               onChange={(event, newValue) => {
+                
+//                 onChange(newValue );
+//               }}
+//               id="controllable-states-demo"
+//               options={options}
+//               renderInput={(params) => (
+//                 <TextField
+//                   {...params}
+//                   {...field}
+//                   label={name}
+//                   inputRef={ref}
+                  
+//                 />
+//               )}
+//             />
+//             {error ? (
+//       <FormHelperText style={{color:'#d32f2f',marginLeft:'1rem'}}>{error.message}</FormHelperText>
+             
+//             ) : null}
+//           </>
+//         );
+//       }}
+//     />
+//   );
+// };
 export const AutocompleteField = (props) => {
   const { control, options, name, multiple } = props;
   return (
@@ -27,13 +73,21 @@ export const AutocompleteField = (props) => {
         return (
           <>
             <Autocomplete
+
             // multiple = { multiple}
+              // value={
+              //   value
+              //     ? options.find((option) => {
+              //   return value === option.code;
+              //       }) ?? null
+              //     : null
+              // }
               getOptionLabel={(option) => {
                 return option.label
               }}
-              // renderOption= {(props, option, { selected }) => (
-              //   <li {...props} style={{ color: 'red' }}> {option.label} </li> 
-              // )}
+              renderOption= {(props, option, { selected }) => (
+                <li {...props} style={{ color: 'red' }}> {option.label} </li> 
+              )}
               onChange={(event, newValue) => {
                 console.log('newValue', newValue);
                 onChange(newValue ? newValue.code : null);
@@ -50,7 +104,7 @@ export const AutocompleteField = (props) => {
             />
             {error ? (
       <FormHelperText style={{color:'#d32f2f',marginLeft:'1rem'}}>{error.message}</FormHelperText>
-             
+
             ) : null}
           </>
         );
@@ -58,7 +112,6 @@ export const AutocompleteField = (props) => {
     />
   );
 };
-
 export const InputTextField = (props) => {
   const { control, name, errors, rules } = props;
   return (
@@ -79,7 +132,8 @@ export const InputTextField = (props) => {
 };
 
 // const DATE_FORMAT = format('DD/MM/YYYY');
-export const DatePickerField = ({ name, control, errors, label }) => {
+export const DatePickerField = (props) => {
+  const { name,defaultValue, control, errors, label } = props
   return (
     
     <Controller
@@ -92,7 +146,9 @@ export const DatePickerField = ({ name, control, errors, label }) => {
         dateAdapter={AdapterDayjs}>
             <DatePicker
                 label={label}
-                defaultValue={dayjs('2019-01-25').format('DD/MM/YYYY')}
+                // defaultValue={dayjs('2019-01-25').format('DD/MM/YYYY')}
+                {...props}
+                defaultValue={defaultValue}
                 {...field}
                 error={errors}
             />

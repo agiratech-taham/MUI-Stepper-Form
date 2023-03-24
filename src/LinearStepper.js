@@ -487,7 +487,9 @@ const BasicInformation = () => {
           name="dob"
           control={control}
           label="DOB"
+          disableFuture
           errors={errors.dob}
+          
         />
       </Grid>
       <Grid item xs={12}>
@@ -530,7 +532,7 @@ const ContactInformation = () => {
               placeholder="Enter Your Phone Number"
               margin="normal"
               control= {control} 
-              type="number"
+              // type="number"
               name="phoneNumber"
               errors = {errors.phoneNumber}
             />
@@ -542,7 +544,7 @@ const ContactInformation = () => {
           placeholder="Enter Your Alternate Phone Number"
           margin="normal"
           control={control}
-          type="number"
+          // type="number"
           name="alternatePhone"
           errors={errors.alternatePhone}
         />
@@ -572,7 +574,7 @@ const ContactInformation = () => {
       </Grid>
       <Grid item xs={12}>
         <AutocompleteField
-          multiple={true}
+          // multiple={true}
           options={countries}
           control={control}
           name="country"
@@ -591,6 +593,18 @@ const PaymentInformation = () => {
   const { control, formState: { errors } } = useFormContext();
   return (
       <Grid item xs={12} sm={6} md={6}>
+        <Grid item xs={12}>
+        <InputTextField
+          label="Card Name"
+          variant="outlined"
+          placeholder="Enter Your Card Name"
+          name="cardName"
+          margin='normal'
+          control={control}
+          errors={errors.cardName
+          }
+        />
+      </Grid>
       <Grid item xs={12}>
         <InputTextField
           label="Card Number"
@@ -600,7 +614,7 @@ const PaymentInformation = () => {
           control={control}
           name="cardNumber"
           errors={errors.cardNumber}
-        />
+          />
         </Grid>
         <Grid item xs={12}>
         <InputTextField
@@ -611,38 +625,52 @@ const PaymentInformation = () => {
           control={control}
           name="cardMonth"
           errors={errors.cardMonth}
-        />
+          />
         </Grid>
         <Grid item xs={12}>
         <DatePickerField
           name="cardYear"
           control={control}
           label="Card Year"
+          format='MM/YYYY'
+          disablePast
           errors={errors.cardYear}
         />
         </Grid>
+        <Grid item xs={12}>
+        <InputTextField 
+              label="cvv"
+              variant="outlined"
+              placeholder="Enter Your CVV Number"
+              margin="normal"
+              control= {control} 
+              // type="number"
+              name="cvv"
+              errors = {errors.cvv}
+            />
+      </Grid>
 </Grid>
-
-  );
+);
 };
 
 function getStepContent(step) {
   switch (step) {
     case 0:
       return <BasicInformation />;
-
+      
     case 1:
       return <ContactInformation />;
 
     case 2:
       return <PaymentInformation />;
 
-    default:
+      default:
       return "unknown step";
   }
 }
 
 const LinaerStepper = () => {
+  const [data,setdata] = useState({})
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
   const steps = getSteps();
@@ -657,9 +685,11 @@ const LinaerStepper = () => {
         address1: "",
         address2: "",
         country: "",
+        cardName:"",
         cardNumber: "",
         cardMonth: "",
         cardYear: "",
+        cvv:"",
       }
       const currentValidationSchema = formValidationSchema[activeStep];
       const methods = useForm({
@@ -679,8 +709,10 @@ const LinaerStepper = () => {
 
   isStepFailed();
   const handleNext = (data) => {
+
     if (activeStep == steps.length - 1) {
       console.log(data);
+      setdata(data)
       fetch("https://jsonplaceholder.typicode.com/comments")
         .then((data) => data.json())
         .then((res) => {
